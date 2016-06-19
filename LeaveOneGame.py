@@ -65,6 +65,7 @@ def playGame(AdjList):
     #print nodeState
     #print "Pegs left: " + str(pegs)
     print moves
+    print "Number of moves: " + str(len(moves))
     return pegs
 
 
@@ -86,10 +87,13 @@ adjList = {'A': [["D", "B"],["F", "C"]],
 
 #print playGame(adjList)
 
+games = 0;
 while(True):
+    games = games + 1
     pegs = playGame(adjList)
     print pegs
     if pegs == 1:
         break
+print "Games played: " + str(games)
 
 

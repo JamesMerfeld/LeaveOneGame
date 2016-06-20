@@ -1,6 +1,8 @@
 from random import randint
+import time
 
 def printAdjList(AdjList):
+    #Utility function to print adacency list
     out = ""
     for key in AdjList:
         out =  key + " -> "
@@ -15,17 +17,13 @@ def generateRandomMove(AdjList, NodeState):
     for node in NodeState:
         if NodeState[node] == 1:
             openNodes.append(node)
-    #print openNodes
 
     #Determine if which open nodes could be a move
     for node in openNodes:
         routes = AdjList[node]
-        #print str(node) + " : " + str(routes)
         for route in routes:
-            #print route
             if NodeState[route[0]] == 0 and NodeState[route[1]] == 0:
                 move = route[0] + node + route[1]
-                #print str("MOVE(") + str(move) + "): " + str(route[0]) + " -> " + str(node) + " remove " + str(route[1])
                 moves.append(move)
     return generateRandomNode(moves)
 
@@ -45,8 +43,9 @@ def playGame(AdjList):
         nodeState[node] = 0
 
     # Randomly pick a node to open to start the game
-    nodeState[generateRandomNode(nodes)] = 1
-    print nodeState
+    openNode = generateRandomNode(nodes)
+    nodeState[openNode] = 1
+    print "Starting with node \"" + str(openNode) + "\" open"
 
     # Randomly select an available move
     while(True):
@@ -54,7 +53,6 @@ def playGame(AdjList):
         if not move:
             break
         moves.append(move)
-        #print "MOVE: " + str(move)
         print str("MOVE(") + str(move) + "): " + str(move[0]) + " -> " + str(move[1]) + " remove " + str(move[2])
         nodeState[move[0]] = 1
         nodeState[move[1]] = 0
@@ -62,13 +60,24 @@ def playGame(AdjList):
     pegs = len(AdjList)
     for key in nodeState:
         pegs = pegs - nodeState[key]
-    #print nodeState
-    #print "Pegs left: " + str(pegs)
-    print moves
     print "Number of moves: " + str(len(moves))
+    print "Pegs remaining: " + str(pegs)
+    print "--------------------------"
     return pegs
 
 
+
+'''
+Represents a directed graph depicting all legal moves:
+
+    A
+   B C
+  D E F
+ G H I J
+K L M N O
+
+Example: If A is open and D and B contain pegs, D can move to A removing B.
+'''
 adjList = {'A': [["D", "B"],["F", "C"]],
            'B': [["G", "D"],["I", "E"]],
            'C': [["J", "F"], ["H", "E"]],
@@ -85,15 +94,15 @@ adjList = {'A': [["D", "B"],["F", "C"]],
            'N': [["L", "M"], ["E", "I"]],
            'O': [["M", "N"], ["F", "J"]]}
 
-#print playGame(adjList)
-
 games = 0;
+timeStart = int(round(time.time() * 1000))
+#Play until a game results in a single peg remaining
 while(True):
     games = games + 1
     pegs = playGame(adjList)
-    print pegs
     if pegs == 1:
         break
 print "Games played: " + str(games)
+print "Elapse time: " + str((int(round(time.time() * 1000)) - timeStart)) + " ms"
 
 
